@@ -1,0 +1,22 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# User-specific files
+*.rsuser
+*.sln.ide
+
+# Logs
+*.log.vs/
+bin/
+obj/
+.vs/
+bin/
+obj/

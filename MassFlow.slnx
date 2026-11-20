@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/mass-flow-studio/">
+    <Project Path="mass-flow-studio/MassFlow.Studio.Authentication.ElsaIdentity.UI/MassFlow.Studio.Authentication.ElsaIdentity.UI.csproj" />
+    <Project Path="mass-flow-studio/MassFlow.Studio.Authentication.UI/MassFlow.Studio.Authentication.UI.csproj" />
+    <Project Path="mass-flow-studio/MassFlow.Studio.csproj" />
+  </Folder>
+</Solution>

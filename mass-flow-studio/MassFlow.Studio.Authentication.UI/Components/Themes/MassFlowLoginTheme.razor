@@ -1,0 +1,68 @@
+@inherits Elsa.Studio.Authentication.UI.Contracts.LoginThemeComponentBase
+
+<link href="_content/MassFlow.Studio.Authentication.UI/css/massflow-login.css" rel="stylesheet" />
+
+<main class="massflow-login-theme" aria-labelledby="massflow-login-heading">
+
+    @* ── Utility links (docs / GitHub icons) top-right ── *@
+    <div class="massflow-login-theme__utilities">
+        @Context.UtilityLinks
+    </div>
+
+    @* ── Left panel: animated canvas brand area ── *@
+    <section class="massflow-login-theme__brand" aria-hidden="true">
+        <div class="massflow-login-theme__canvas-art">
+            @* Workflow-node decoration — pure CSS/SVG, no JS *@
+            <svg viewBox="0 0 500 600" xmlns="http://www.w3.org/2000/svg"
+                 class="massflow-login-theme__svg" aria-hidden="true">
+                <!-- connector lines -->
+                <line x1="250" y1="80"  x2="180" y2="200" stroke="#b0c4de" stroke-width="1.5" stroke-dasharray="6 4"/>
+                <line x1="250" y1="80"  x2="320" y2="200" stroke="#b0c4de" stroke-width="1.5" stroke-dasharray="6 4"/>
+                <line x1="180" y1="200" x2="180" y2="320" stroke="#b0c4de" stroke-width="1.5" stroke-dasharray="6 4"/>
+                <line x1="320" y1="200" x2="320" y2="320" stroke="#b0c4de" stroke-width="1.5" stroke-dasharray="6 4"/>
+                <line x1="180" y1="320" x2="250" y2="440" stroke="#b0c4de" stroke-width="1.5" stroke-dasharray="6 4"/>
+                <line x1="320" y1="320" x2="250" y2="440" stroke="#b0c4de" stroke-width="1.5" stroke-dasharray="6 4"/>
+                <!-- nodes -->
+                <rect x="210" y="50"  width="80" height="50" rx="8" fill="white" stroke="#4a90d9" stroke-width="1.5" opacity="0.9"/>
+                <rect x="140" y="175" width="80" height="50" rx="8" fill="white" stroke="#4a90d9" stroke-width="1.5" opacity="0.9"/>
+                <rect x="280" y="175" width="80" height="50" rx="8" fill="white" stroke="#4a90d9" stroke-width="1.5" opacity="0.9"/>
+                <rect x="140" y="295" width="80" height="50" rx="8" fill="white" stroke="#4a90d9" stroke-width="1.5" opacity="0.9"/>
+                <rect x="280" y="295" width="80" height="50" rx="8" fill="white" stroke="#4a90d9" stroke-width="1.5" opacity="0.9"/>
+                <rect x="210" y="415" width="80" height="50" rx="8" fill="white" stroke="#4a90d9" stroke-width="1.5" opacity="0.9"/>
+                <!-- node icons (simple shapes) -->
+                <circle cx="250" cy="75"  r="10" fill="#4a90d9" opacity="0.7"/>
+                <circle cx="180" cy="200" r="10" fill="#4a90d9" opacity="0.7"/>
+                <circle cx="320" cy="200" r="10" fill="#4a90d9" opacity="0.7"/>
+                <circle cx="180" cy="320" r="10" fill="#4a90d9" opacity="0.7"/>
+                <circle cx="320" cy="320" r="10" fill="#4a90d9" opacity="0.7"/>
+                <circle cx="250" cy="440" r="10" fill="#4a90d9" opacity="0.7"/>
+            </svg>
+        </div>
+
+        <div class="massflow-login-theme__brand-copy">
+            <div class="massflow-login-theme__logo-wrap">
+                @if (!string.IsNullOrWhiteSpace(Context.Branding.LogoUrl))
+                {
+                    <img src="@Context.Branding.LogoUrl" alt="Mass Flow" class="massflow-login-theme__logo" />
+                }
+                else
+                {
+                    <span class="massflow-login-theme__logo-text">⚡</span>
+                }
+            </div>
+            <h1 class="massflow-login-theme__app-name">@Context.Branding.ApplicationName</h1>
+            @if (!string.IsNullOrWhiteSpace(Context.Branding.Tagline))
+            {
+                <p class="massflow-login-theme__tagline">@Context.Branding.Tagline</p>
+            }
+        </div>
+    </section>
+
+    @* ── Right panel: sign-in card ── *@
+    <section class="massflow-login-theme__signin">
+        <article class="massflow-login-theme__card" id="massflow-login-heading">
+            @Context.LoginPanel
+        </article>
+    </section>
+
+</main>

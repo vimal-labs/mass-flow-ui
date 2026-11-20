@@ -1,0 +1,18 @@
+@page "/login"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@layout Elsa.Studio.Layouts.BasicLayout
+
+<PageTitle>Sign in – Mass Flow</PageTitle>
+
+@* Reuse Elsa's LoginThemeHost: it looks up the registered theme and renders
+   LoginPanel + UtilityLinks through it. The MassFlow theme is registered via
+   AddMassFlowLoginTheme() and selected automatically as the only available theme. *@
+<Elsa.Studio.Authentication.UI.Components.LoginThemeHost ReturnPath="@(ReturnPath ?? ReturnUrl)" />
+
+@code {
+    [SupplyParameterFromQuery(Name = "returnPath")]
+    public string? ReturnPath { get; set; }
+
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string? ReturnUrl { get; set; }
+}

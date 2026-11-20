@@ -1,0 +1,110 @@
+@implements ILoginMethodComponent
+@inject Elsa.Studio.Authentication.ElsaIdentity.Contracts.IJwtAccessor JwtAccessor
+@inject Elsa.Studio.Authentication.ElsaIdentity.Contracts.ICredentialsValidator CredentialsValidator
+@inject Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+<div class="massflow-identity-login">
+    <MudText Typo="Typo.h6" Class="mb-1">Mass Flow account</MudText>
+
+    @if (!string.IsNullOrWhiteSpace(_error))
+    {
+        <MudAlert Severity="Severity.Error" Dense="true" Class="mb-3" role="alert">@_error</MudAlert>
+    }
+
+    <MudTextField @bind-Value="_username"
+                  Label="User name"
+                  autocomplete="username"
+                  Required="true"
+                  Disabled="_isBusy"
+                  Variant="Variant.Outlined"
+                  Margin="Margin.Dense"
+                  Class="mb-3" />
+
+    <MudTextField @bind-Value="_password"
+                  Label="Password"
+                  InputType="InputType.Password"
+                  autocomplete="current-password"
+                  Required="true"
+                  Disabled="_isBusy"
+                  Variant="Variant.Outlined"
+                  Margin="Margin.Dense"
+                  Class="mb-4" />
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               FullWidth="true"
+               Size="Size.Large"
+               Disabled="_isBusy"
+               OnClick="SignInAsync">
+        @if (_isBusy)
+        {
+            <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+            <span>Signing in…</span>
+        }
+        else
+        {
+            <span>SIGN IN</span>
+        }
+    </MudButton>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public LoginMethodComponentContext Context { get; set; } = null!;
+
+    // TODO: remove hardcoded defaults before production
+    private string _username = "admin";
+    private string _password = "password";
+    private bool _isBusy;
+    private string? _error;
+
+    private async Task SignInAsync()
+    {
+        if (_isBusy)
+            return;
+
+        _error = null;
+        _isBusy = true;
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(_username) || string.IsNullOrWhiteSpace(_password))
+            {
+                _error = "Please enter your username and password.";
+                return;
+            }
+
+            var result = await CredentialsValidator.ValidateCredentialsAsync(_username, _password);
+
+            if (!result.IsValid)
+            {
+                _error = "Invalid credentials. Check your username and password.";
+                await Context.ReportFailureAsync(_error);
+                return;
+            }
+
+            await JwtAccessor.WriteTokenAsync(
+                Elsa.Studio.Authentication.ElsaIdentity.TokenNames.AccessToken,
+                result.AccessToken!);
+            await JwtAccessor.WriteTokenAsync(
+                Elsa.Studio.Authentication.ElsaIdentity.TokenNames.RefreshToken,
+                result.RefreshToken!);
+
+            if (AuthenticationStateProvider is
+                Elsa.Studio.Authentication.ElsaIdentity.Services.AccessTokenAuthenticationStateProvider sp)
+            {
+                sp.NotifyAuthenticationStateChanged();
+            }
+
+            Navigation.NavigateTo(
+                Elsa.Studio.Authentication.Abstractions.LocalReturnPath.RootAgainstBase(
+                    Context.ReturnPath, Navigation.BaseUri),
+                forceLoad: true);
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+}
