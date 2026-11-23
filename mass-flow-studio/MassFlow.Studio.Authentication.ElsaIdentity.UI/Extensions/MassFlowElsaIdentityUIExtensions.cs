@@ -1,11 +1,10 @@
-using Elsa.Studio.Authentication.Abstractions.ComponentProviders;
+﻿using Elsa.Studio.Authentication.Abstractions.ComponentProviders;
 using Elsa.Studio.Authentication.Abstractions.Contracts;
 using Elsa.Studio.Authentication.Abstractions.Models;
 using Elsa.Studio.Authentication.ElsaIdentity.UI;
 using Elsa.Studio.Authentication.ElsaIdentity.UI.Components;
 using Elsa.Studio.Authentication.ElsaIdentity.UI.Services;
 using Elsa.Studio.Contracts;
-using MassFlow.Studio.Authentication.ElsaIdentity.UI.Components;
 using MassFlow.Studio.Authentication.ElsaIdentity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,14 +14,14 @@ public static class MassFlowElsaIdentityUIExtensions
 {
     /// <summary>
     /// Registers MassFlow-branded Elsa Identity login UI.
-    /// Replaces AddElsaIdentityUI() entirely — registers all the same services
+    /// Replaces AddElsaIdentityUI() entirely â€” registers all the same services
     /// except uses MassFlow's login component instead of Elsa's default.
     /// </summary>
     public static IServiceCollection AddMassFlowElsaIdentityUI(this IServiceCollection services)
     {
         services.AddScoped<IFeature, ElsaIdentityUIFeature>();
         services.AddSingleton(new StudioAuthenticationProviderRegistration(StudioAuthenticationProvider.ElsaIdentity));
-        services.AddScoped<ILoginMethodCatalog, ElsaIdentityLoginMethodCatalog>();
+        services.AddScoped<ILoginMethodCatalog, MassFlow.Studio.Authentication.ElsaIdentity.UI.Services.MassFlowIdentityLoginMethodCatalog>();
         services.AddSingleton<ILoginMethodIconProvider, ElsaIdentityLoginMethodIconProvider>();
 
         // MassFlow-branded login form (replaces ElsaIdentityLoginMethodComponentProvider)

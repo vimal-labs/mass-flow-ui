@@ -4,7 +4,7 @@ using Elsa.Studio.Branding.Models;
 namespace MassFlow.Studio;
 
 /// <summary>
-/// MassFlow-branded provider — replaces Elsa's DefaultBrandingProvider.
+/// MassFlow-branded provider — DefaultBrandingProvider.
 /// </summary>
 public sealed class MassFlowBrandingProvider : DefaultBrandingProvider
 {
