@@ -1,6 +1,7 @@
 ﻿using Elsa.Studio.Authentication.Abstractions.ComponentProviders;
 using Elsa.Studio.Authentication.Abstractions.Contracts;
 using Elsa.Studio.Authentication.Abstractions.Models;
+using Elsa.Studio.Authentication.ElsaIdentity.Contracts;
 using Elsa.Studio.Authentication.ElsaIdentity.UI;
 using Elsa.Studio.Authentication.ElsaIdentity.UI.Components;
 using Elsa.Studio.Authentication.ElsaIdentity.UI.Services;
@@ -21,14 +22,18 @@ public static class MassFlowElsaIdentityUIExtensions
     {
         services.AddScoped<IFeature, ElsaIdentityUIFeature>();
         services.AddSingleton(new StudioAuthenticationProviderRegistration(StudioAuthenticationProvider.ElsaIdentity));
-        services.AddScoped<ILoginMethodCatalog, MassFlow.Studio.Authentication.ElsaIdentity.UI.Services.MassFlowIdentityLoginMethodCatalog>();
+        services.AddScoped<ILoginMethodCatalog, MassFlowIdentityLoginMethodCatalog>();
         services.AddSingleton<ILoginMethodIconProvider, ElsaIdentityLoginMethodIconProvider>();
 
-        // MassFlow-branded login form (replaces ElsaIdentityLoginMethodComponentProvider)
+        // MassFlow-branded login form
         services.AddScoped<ILoginMethodComponentProvider, MassFlowIdentityLoginMethodComponentProvider>();
 
         // Redirect unauthorized users to /login
         services.AddScoped<IUnauthorizedComponentProvider, UnauthorizedComponentProvider<RedirectToLogin>>();
+
+        // sessionStorage-based JWT accessor — tokens clear when tab closes,
+        // so users always see the login page on a new browser session.
+        services.AddScoped<IJwtAccessor, SessionStorageJwtAccessor>();
 
         return services;
     }

@@ -4,8 +4,9 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
-        <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-        <DisableBuildCompression>true</DisableBuildCompression>
+        <BlazorWebAssemblyLoadAllGlobalizationData>false</BlazorWebAssemblyLoadAllGlobalizationData>
+        <BlazorWebAssemblyPreserveCollationData>false</BlazorWebAssemblyPreserveCollationData>
+        <DisableBuildCompression>false</DisableBuildCompression>
     </PropertyGroup>
 
     <!-- Exclude sub-project source and generated files from this project's compilation -->

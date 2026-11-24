@@ -1,14 +1,35 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>Mass Flow Studio</title>
     <base href="/"/>
+    <!-- Preconnect injected dynamically from appsettings.json (Backend.Url) -->
+    <script>
+        (function () {
+            fetch('/appsettings.json')
+                .then(function (r) { return r.json(); })
+                .then(function (cfg) {
+                    var url = cfg && cfg.Backend && cfg.Backend.Url;
+                    if (!url) return;
+                    try { url = new URL(url).origin; } catch (e) { return; }
+                    var pc = document.createElement('link');
+                    pc.rel = 'preconnect'; pc.href = url;
+                    document.head.appendChild(pc);
+                    var dns = document.createElement('link');
+                    dns.rel = 'dns-prefetch'; dns.href = url;
+                    document.head.appendChild(dns);
+                })
+                .catch(function () {});
+        })();
+    </script>
     <link rel="apple-touch-icon" sizes="180x180" href="_content/Elsa.Studio.Shell/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="_content/Elsa.Studio.Shell/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="_content/Elsa.Studio.Shell/favicon-16x16.png">
     <link rel="manifest" href="_content/Elsa.Studio.Shell/site.webmanifest">
+    <link rel="preload" href="_content/MudBlazor/MudBlazor.min.css" as="style"/>
+    <link rel="preload" href="_content/Elsa.Studio.Shell/css/shell.css" as="style"/>
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
     <link href="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.css" rel="stylesheet"/>
     <link href="_content/Radzen.Blazor/css/material-base.css" rel="stylesheet">
@@ -19,19 +40,44 @@
     <link href="_content/MassFlow.Studio.Authentication.UI/css/massflow-login.css" rel="stylesheet">
 </head>
 <body>
-<div id="app">
-    <div class="loading-splash mud-container mud-container-maxwidth-false">
-        <h5 class="mud-typography mud-typography-h5 mud-primary-text my-6">Loading...</h5>
+<div id="app"></div>
+
+<!-- Auth-init overlay: stays visible until after Blazor's auth check and redirect complete.
+     Prevents the brief shell/dashboard flash before the login redirect. -->
+<div id="auth-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.25s ease;">
+    <img src="/img/massflow-icon.svg" alt="Mass Flow" style="width:64px;height:64px;margin-bottom:16px;"/>
+    <h5 style="font-size:1.25rem;font-weight:500;color:#1565C0;margin:0 0 8px;font-family:sans-serif;">Mass Flow</h5>
+    <p style="color:#888;font-size:14px;font-family:sans-serif;margin:0;">Loading application...</p>
+    <div style="width:200px;height:4px;background:#e0e0e0;border-radius:2px;margin-top:16px;overflow:hidden;">
+        <div style="height:100%;background:#1565C0;border-radius:2px;animation:mf-load 2s ease-in-out infinite;"></div>
     </div>
+    <style>@keyframes mf-load{0%{width:0%;margin-left:0}50%{width:70%;margin-left:15%}100%{width:0%;margin-left:100%}}</style>
 </div>
+<script>
+    (function () {
+        var overlay = document.getElementById('auth-overlay');
+        var appDiv = document.getElementById('app');
+        if (!overlay || !appDiv) return;
+        // Watch for Blazor mounting into #app, then wait for auth redirect to settle
+        var observer = new MutationObserver(function () {
+            observer.disconnect();
+            // 500ms: enough for sessionStorage read + auth redirect to complete on slow machines
+            setTimeout(function () {
+                overlay.style.opacity = '0';
+                setTimeout(function () { overlay.remove(); }, 260);
+            }, 500);
+        });
+        observer.observe(appDiv, { childList: true });
+    })();
+</script>
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">x</a>
 </div>
-<script src="_content/BlazorMonaco/jsInterop.js"></script>
-<script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/loader.js"></script>
-<script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.js"></script>
+<script src="_content/BlazorMonaco/jsInterop.js" defer></script>
+<script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/loader.js" defer></script>
+<script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.js" defer></script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="_content/CodeBeam.MudBlazor.Extensions/MudExtensions.min.js"></script>
 <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
